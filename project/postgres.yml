@@ -1,0 +1,28 @@
+version: "3"
+services:
+
+  mailhog: 
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    container_name: mailhog
+    
+  postgres: 
+    image: "postgres:14.2"
+    ports:
+      - "5434:5432"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment: 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - /db-data/postgres:/var/lib/postgresql/data
+    container_name: postgres-default
+
+  

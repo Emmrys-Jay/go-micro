@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-default
+  template:
+    metadata:
+      labels:
+        app: mongo-default
+    spec:
+      containers:
+      - name: mongo-default
+        image: mongo:4.2.17-bionic
+        env: 
+          - name: MONGO_INITDB_DATABASE
+            value: "logs"
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: "admin"
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: "password"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 27017
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-default
+spec:
+  selector:
+    app: mongo-default
+  ports:
+    - protocol: TCP
+      name: main-port
+      port: 27017
+      targetPort: 27017
